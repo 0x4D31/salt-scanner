@@ -1,30 +1,44 @@
 #!/usr/bin/env python
 
+from collections import defaultdict
+from slackclient import SlackClient
+
+__author__ = 'Adel Ka (0x4d31)'
+__version__ = '0.1'
+
 import json
 import os
 import time
 import urllib2
 import salt.client
 import uuid
-from collections import defaultdict
-from slackclient import SlackClient
 try:
     import urllib.request as urllib2
 except ImportError:
     import urllib2
 
-__author__ = '0x4d31'
 
-# -----[ configuration ]-----
+#############################[ configuration ]#############################
 
+# OS name in lowercase (e.g. "centos")
+# OS version (e.g. "7")
+# Set the both values to None for automatic OS and version detection
 default_os_name = None
 default_os_ver = None
+
+# Bash glob (e.g. "prod-db*") or python list of hosts (e.g. "host1,host2")
 hosts_list = "*"
+
+# Set it for sending slack alerts
 slack_alert = True
+# Use "#something" for public channels or "something" for private channels
 slack_channel = "#vulners"
+
+# Leave it empty to write output to the current directory
 output_filepath = ""
 
-# ---------------------------
+###########################################################################
+
 
 VULNERS_LINKS = {'pkgChecker': 'https://vulners.com/api/v3/audit/audit/',
                  'bulletin': 'https://vulners.com/api/v3/search/id/?id=%s'}
@@ -38,7 +52,7 @@ ASCII = r"""
 /\__/ / (_| | | |_  /\__/ / (_| (_| | | | | | | |  __/ |   
 \____/ \__,_|_|\__| \____/ \___\__,_|_| |_|_| |_|\___|_|   
 
-                                          Using Vulners API
+ Vulnerability scanner based on Vulners API and Salt Open
 ===========================================================
 
 """

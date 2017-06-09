@@ -1,9 +1,9 @@
 # salt-scanner
-Vulnerability scanner based on Salt Open and Vulners audit API
+Vulnerability Scanner based on Vulners Audit API and Salt Open
 
 ### Test:
 ```
-root@localhost ~]# sudo SLACK_API_TOKEN="EXAMPLETOKEN" python salt-scanner.py
+[root@localhost ~]# sudo SLACK_API_TOKEN="EXAMPLETOKEN" python salt-scanner.py
 
 ===========================================================
  _____       _ _     _____
@@ -13,7 +13,7 @@ root@localhost ~]# sudo SLACK_API_TOKEN="EXAMPLETOKEN" python salt-scanner.py
 /\__/ / (_| | | |_  /\__/ / (_| (_| | | | | | | |  __/ |
 \____/ \__,_|_|\__| \____/ \___\__,_|_| |_|_| |_|\___|_|
 
-                                          Using Vulners API
+ Vulnerability scanner based on Vulners API and Salt Open
 ===========================================================
 
 + No default OS is configured. Detecting OS...
