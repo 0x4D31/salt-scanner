@@ -1,0 +1,374 @@
+=============================================
+Scan started at Fri, 09 Jun 2017 11:55:57 EDT
+=============================================
+:ghost: Scan Results:
+
+
++ Host: 10.10.10.55
+    CVSS Score: 9.3    Severity: Critical
+
+    Vulnerable packages:
+      sudo-1.8.6p7-21.el7_3.x86_64
+          CESA-2017:1382 - 'sudo security update', cvss.score - 0.0
+      nss-tools-3.28.4-1.0.el7_3.x86_64
+          CESA-2017:1365 - 'nss security update', cvss.score - 0.0
+      python-perf-3.10.0-514.16.1.el7.x86_64
+          CESA-2017:1308 - 'kernel, perf, python security update', cvss.score - 9.3
+      kernel-tools-3.10.0-514.16.1.el7.x86_64
+          CESA-2017:1308 - 'kernel, perf, python security update', cvss.score - 9.3
+      nss-sysinit-3.28.4-1.0.el7_3.x86_64
+          CESA-2017:1365 - 'nss security update', cvss.score - 0.0
+      kernel-tools-libs-3.10.0-514.16.1.el7.x86_64
+          CESA-2017:1308 - 'kernel, perf, python security update', cvss.score - 9.3
+      nss-3.28.4-1.0.el7_3.x86_64
+          CESA-2017:1365 - 'nss security update', cvss.score - 0.0
+
+
++ Host: 10.10.10.56
+    CVSS Score: 10.0    Severity: Critical
+
+    Vulnerable packages:
+      libnl3-3.2.21-6.el7.x86_64
+          CESA-2016:2581 - 'NetworkManager, libnl3, libnm, libnma, network, nm security update', cvss.score - 0
+      python-libs-2.7.5-16.el7.x86_64
+          CESA-2015:2101 - 'python, tkinter security update', cvss.score - 6.4
+          CESA-2016:2586 - 'python, tkinter security update', cvss.score - 10
+          CESA-2016:1626 - 'python, tkinter security update', cvss.score - 5.8
+      NetworkManager-0.9.9.1-29.git20140326.4dba720.el7_0.x86_64
+          CESA-2015:2315 - 'ModemManager, NetworkManager, libnm, network, nm security update', cvss.score - 5
+          CESA-2016:2581 - 'NetworkManager, libnl3, libnm, libnma, network, nm security update', cvss.score - 0
+      file-5.11-21.el7.x86_64
+          CESA-2015:2155 - 'file, python security update', cvss.score - 7.5
+      mariadb-libs-5.5.41-2.el7_0.x86_64
+          CESA-2016:1602 - 'mariadb security update', cvss.score - 6.8
+          CESA-2016:2595 - 'mariadb security update', cvss.score - 10
+          CESA-2015:1665 - 'mariadb security update', cvss.score - 5.7
+          CESA-2016:0534 - 'mariadb security update', cvss.score - 7.2
+      kexec-tools-2.0.4-32.el7.centos.5.x86_64
+          CESA-2015:0986 - 'kexec security update', cvss.score - 3.6
+      libuuid-2.23.2-16.el7.x86_64
+          CESA-2016:2605 - 'libblkid, libmount, libuuid, util, uuidd security update', cvss.score - 4.7
+          CESA-2017:0907 - 'libblkid, libmount, libuuid, util, uuidd security update', cvss.score - 0
+      expat-2.1.0-8.el7.x86_64
+          CESA-2016:2824 - 'expat security update', cvss.score - 7.5
+      nss-tools-3.16.2.3-2.el7_0.x86_64
+          CESA-2017:1100 - 'nss security update', cvss.score - 7.5
+          CESA-2015:1981 - 'nspr, nss security update', cvss.score - 7.5
+          CESA-2016:0685 - 'nspr, nss security update', cvss.score - 7.5
+          CESA-2016:0007 - 'nss security update', cvss.score - 4.3
+          CESA-2016:2779 - 'nss security update', cvss.score - 9.3
+          CESA-2015:1185 - 'nss security update', cvss.score - 4.3
+          CESA-2017:1365 - 'nss security update', cvss.score - 0.0
+      openssh-server-6.4p1-8.el7.x86_64
+          CESA-2015:0425 - 'openssh, pam_ssh_agent_auth security update', cvss.score - 5.8
+          CESA-2016:0043 - 'openssh, pam_ssh_agent_auth security update', cvss.score - 4.6
+          CESA-2016:2588 - 'openssh, pam_ssh_agent_auth security update', cvss.score - 7.2
+          CESA-2016:0465 - 'openssh, pam_ssh_agent_auth security update', cvss.score - 7.5
+          CESA-2015:2088 - 'openssh, pam_ssh_agent_auth security update', cvss.score - 8.5
+      nss-softokn-3.16.2.3-1.el7_0.x86_64
+          CESA-2015:1699 - 'nss security update', cvss.score - 4.3
+          CESA-2016:0685 - 'nspr, nss security update', cvss.score - 7.5
+      openssl-1.0.1e-34.el7_0.7.x86_64
+          CESA-2016:1940 - 'openssl security update', cvss.score - 7.8
+          CESA-2015:1115 - 'openssl security update', cvss.score - 7.5
+          CESA-2016:0008 - 'openssl security update', cvss.score - 4.3
+          CESA-2015:2617 - 'openssl security update', cvss.score - 5
+          CESA-2016:0722 - 'openssl security update', cvss.score - 10.0
+          CESA-2015:0716 - 'openssl security update', cvss.score - 7.5
+          CESA-2016:0301 - 'openssl security update', cvss.score - 10
+          CESA-2017:0286 - 'openssl security update', cvss.score - 5
+          CESA-2015:1072 - 'openssl security update', cvss.score - 4.3
+      util-linux-2.23.2-16.el7.x86_64
+          CESA-2016:2605 - 'libblkid, libmount, libuuid, util, uuidd security update', cvss.score - 4.7
+          CESA-2017:0907 - 'libblkid, libmount, libuuid, util, uuidd security update', cvss.score - 0
+      krb5-libs-1.11.3-49.el7.x86_64
+          CESA-2016:0532 - 'krb5 security update', cvss.score - 6.8
+          CESA-2015:0439 - 'krb5 security update', cvss.score - 9
+          CESA-2015:2154 - 'krb5 security update', cvss.score - 5.8
+          CESA-2016:2591 - 'krb5, libkadm5 security update', cvss.score - 4
+      nss-softokn-freebl-3.16.2.3-1.el7_0.x86_64
+          CESA-2015:1699 - 'nss security update', cvss.score - 4.3
+          CESA-2016:0685 - 'nspr, nss security update', cvss.score - 7.5
+      nspr-4.10.6-1.el7_0.x86_64
+          CESA-2015:1981 - 'nspr, nss security update', cvss.score - 7.5
+          CESA-2016:0685 - 'nspr, nss security update', cvss.score - 7.5
+      glibc-2.17-55.el7_0.5.x86_64
+          CESA-2015:0327 - 'glibc, nscd security update', cvss.score - 5
+          CESA-2015:2172 - 'glibc, nscd security update', cvss.score - 7.2
+          CESA-2016:0176 - 'glibc, nscd security update', cvss.score - 6.8
+          CESA-2015:2199 - 'glibc, nscd security update', cvss.score - 7.5
+          CESA-2016:2573 - 'glibc, nscd security update', cvss.score - 5
+      nettle-2.7.1-2.el7.x86_64
+          CESA-2016:2582 - 'nettle security update', cvss.score - 7.5
+      libndp-1.2-4.el7.x86_64
+          CESA-2016:1086 - 'libndp security update', cvss.score - 6.8
+      nss-util-3.16.2.3-1.el7_0.x86_64
+          CESA-2017:1100 - 'nss security update', cvss.score - 7.5
+          CESA-2015:1981 - 'nspr, nss security update', cvss.score - 7.5
+          CESA-2016:0685 - 'nspr, nss security update', cvss.score - 7.5
+          CESA-2016:2779 - 'nss security update', cvss.score - 9.3
+          CESA-2015:1185 - 'nss security update', cvss.score - 4.3
+          CESA-2016:0370 - 'nss security update', cvss.score - 6.8
+      gnutls-3.1.18-10.el7_0.x86_64
+          CESA-2016:0012 - 'gnutls security update', cvss.score - 4.3
+      polkit-0.112-5.el7.x86_64
+          CESA-2016:0189 - 'polkit security update', cvss.score - 4.6
+      dhcp-libs-4.2.5-27.el7.centos.2.x86_64
+          CESA-2016:2590 - 'dhclient, dhcp security update', cvss.score - 7.1
+      kernel-tools-3.10.0-123.20.1.el7.x86_64
+          CESA-2016:2098 - 'kernel, perf, python security update', cvss.score - 7.2
+          CESA-2017:0086 - 'kernel, perf, python security update', cvss.score - 10
+          CESA-2015:0987 - 'kernel, perf, python security update', cvss.score - 9.3
+          CESA-2015:1978 - 'kernel, perf, python security update', cvss.score - 6.1
+          CESA-2016:1633 - 'kernel, perf, python security update', cvss.score - 5.8
+          CESA-2016:0185 - 'kernel, perf, python security update', cvss.score - 7.2
+          CESA-2017:0933 - 'kernel, perf, python security update', cvss.score - 7.2
+          CESA-2017:0294 - 'kernel, perf, python security update', cvss.score - 7.2
+          CESA-2017:1308 - 'kernel, perf, python security update', cvss.score - 9.3
+          CESA-2016:1033 - 'kernel, perf, python security update', cvss.score - 7.2
+          CESA-2016:0064 - 'kernel, perf, python security update', cvss.score - 7.2
+          CESA-2015:2552 - 'kernel, perf, python security update', cvss.score - 4.9
+          CESA-2016:1277 - 'kernel, perf, python security update', cvss.score - 7.2
+          CESA-2015:1137 - 'kernel, perf, python security update', cvss.score - 7.2
+          CESA-2015:1778 - 'kernel, perf, python security update', cvss.score - 7.8
+          CESA-2015:0726 - 'kernel, perf, python security update', cvss.score - 10.0
+          CESA-2016:2574 - 'kernel, perf, python security update', cvss.score - 10
+          CESA-2015:2152 - 'kernel, perf, python security update', cvss.score - 7.2
+          CESA-2016:1847 - 'kernel, perf, python security update', cvss.score - 7.2
+          CESA-2016:2047 - 'kernel, perf, python security update', cvss.score - 7.8
+          CESA-2016:1539 - 'kernel, perf, python security update', cvss.score - 7.2
+          CESA-2015:1534 - 'kernel, perf, python security update', cvss.score - 6.9
+          CESA-2017:0386 - 'kernel, perf, python security update', cvss.score - 7.2
+          CESA-2015:0290 - 'kernel, perf, python security update', cvss.score - 7.2
+      grub2-2.02-0.2.10.el7.centos.1.x86_64
+          CESA-2015:2401 - 'grub2 security update', cvss.score - 2.6
+          CESA-2015:2653 - 'grub2 security update', cvss.score - 6.9
+      kernel-3.10.0-123.el7.x86_64
+          CESA-2017:0086 - 'kernel, perf, python security update', cvss.score - 10
+          CESA-2014:1971 - 'kernel, perf, python security update', cvss.score - 7.8
+          CESA-2016:2098 - 'kernel, perf, python security update', cvss.score - 7.2
+          CESA-2015:0987 - 'kernel, perf, python security update', cvss.score - 9.3
+          CESA-2015:1978 - 'kernel, perf, python security update', cvss.score - 6.1
+          CESA-2016:1633 - 'kernel, perf, python security update', cvss.score - 5.8
+          CESA-2015:0290 - 'kernel, perf, python security update', cvss.score - 7.2
+          CESA-2017:0933 - 'kernel, perf, python security update', cvss.score - 7.2
+          CESA-2017:0294 - 'kernel, perf, python security update', cvss.score - 7.2
+          CESA-2017:1308 - 'kernel, perf, python security update', cvss.score - 9.3
+          CESA-2016:1033 - 'kernel, perf, python security update', cvss.score - 7.2
+          CESA-2016:0064 - 'kernel, perf, python security update', cvss.score - 7.2
+          CESA-2015:2552 - 'kernel, perf, python security update', cvss.score - 4.9
+          CESA-2016:1277 - 'kernel, perf, python security update', cvss.score - 7.2
+          CESA-2015:1137 - 'kernel, perf, python security update', cvss.score - 7.2
+          CESA-2014:1281 - 'kernel, perf, python security update', cvss.score - 3.3
+          CESA-2014:1023 - 'kernel, perf, python security update', cvss.score - 7.2
+          CESA-2014:0923 - 'kernel, perf, python security update', cvss.score - 6.9
+          CESA-2015:0726 - 'kernel, perf, python security update', cvss.score - 10.0
+          CESA-2015:1778 - 'kernel, perf, python security update', cvss.score - 7.8
+          CESA-2015:0102 - 'kernel, perf, python security update', cvss.score - 7.8
+          CESA-2016:2574 - 'kernel, perf, python security update', cvss.score - 10
+          CESA-2015:2152 - 'kernel, perf, python security update', cvss.score - 7.2
+          CESA-2016:1847 - 'kernel, perf, python security update', cvss.score - 7.2
+          CESA-2016:2047 - 'kernel, perf, python security update', cvss.score - 7.8
+          CESA-2016:1539 - 'kernel, perf, python security update', cvss.score - 7.2
+          CESA-2014:2010 - 'kernel, perf, python security update', cvss.score - 7.2
+          CESA-2015:1534 - 'kernel, perf, python security update', cvss.score - 6.9
+          CESA-2014:1724 - 'kernel, perf, python security update', cvss.score - 6.6
+          CESA-2017:0386 - 'kernel, perf, python security update', cvss.score - 7.2
+          CESA-2016:0185 - 'kernel, perf, python security update', cvss.score - 7.2
+      openssh-6.4p1-8.el7.x86_64
+          CESA-2015:0425 - 'openssh, pam_ssh_agent_auth security update', cvss.score - 5.8
+          CESA-2016:0043 - 'openssh, pam_ssh_agent_auth security update', cvss.score - 4.6
+          CESA-2016:2588 - 'openssh, pam_ssh_agent_auth security update', cvss.score - 7.2
+          CESA-2016:0465 - 'openssh, pam_ssh_agent_auth security update', cvss.score - 7.5
+          CESA-2015:2088 - 'openssh, pam_ssh_agent_auth security update', cvss.score - 8.5
+      libmount-2.23.2-16.el7.x86_64
+          CESA-2016:2605 - 'libblkid, libmount, libuuid, util, uuidd security update', cvss.score - 4.7
+          CESA-2017:0907 - 'libblkid, libmount, libuuid, util, uuidd security update', cvss.score - 0
+      glibc-common-2.17-55.el7_0.5.x86_64
+          CESA-2015:0327 - 'glibc, nscd security update', cvss.score - 5
+          CESA-2015:2172 - 'glibc, nscd security update', cvss.score - 7.2
+          CESA-2016:0176 - 'glibc, nscd security update', cvss.score - 6.8
+          CESA-2015:2199 - 'glibc, nscd security update', cvss.score - 7.5
+          CESA-2016:2573 - 'glibc, nscd security update', cvss.score - 5
+      libssh2-1.4.3-8.el7.x86_64
+          CESA-2016:0428 - 'libssh2 security update', cvss.score - 4.3
+          CESA-2015:2140 - 'libssh2 security update', cvss.score - 6.8
+      NetworkManager-glib-0.9.9.1-29.git20140326.4dba720.el7_0.x86_64
+          CESA-2015:2315 - 'ModemManager, NetworkManager, libnm, network, nm security update', cvss.score - 5
+          CESA-2016:2581 - 'NetworkManager, libnl3, libnm, libnma, network, nm security update', cvss.score - 0
+      libgcrypt-1.5.3-4.el7.x86_64
+          CESA-2016:2674 - 'libgcrypt security update', cvss.score - 5
+      pcre-8.32-12.el7.x86_64
+          CESA-2016:1025 - 'pcre security update', cvss.score - 9
+          CESA-2015:0330 - 'pcre security update', cvss.score - 5
+      dhclient-4.2.5-27.el7.centos.2.x86_64
+          CESA-2016:2590 - 'dhclient, dhcp security update', cvss.score - 7.1
+      nss-sysinit-3.16.2.3-2.el7_0.x86_64
+          CESA-2017:1100 - 'nss security update', cvss.score - 7.5
+          CESA-2015:1981 - 'nspr, nss security update', cvss.score - 7.5
+          CESA-2016:0685 - 'nspr, nss security update', cvss.score - 7.5
+          CESA-2016:0007 - 'nss security update', cvss.score - 4.3
+          CESA-2016:2779 - 'nss security update', cvss.score - 9.3
+          CESA-2015:1185 - 'nss security update', cvss.score - 4.3
+          CESA-2017:1365 - 'nss security update', cvss.score - 0.0
+      ModemManager-glib-1.1.0-6.git20130913.el7.x86_64
+          CESA-2015:2315 - 'ModemManager, NetworkManager, libnm, network, nm security update', cvss.score - 5
+      dhcp-common-4.2.5-27.el7.centos.2.x86_64
+          CESA-2016:2590 - 'dhclient, dhcp security update', cvss.score - 7.1
+      kernel-tools-libs-3.10.0-123.20.1.el7.x86_64
+          CESA-2016:2098 - 'kernel, perf, python security update', cvss.score - 7.2
+          CESA-2017:0086 - 'kernel, perf, python security update', cvss.score - 10
+          CESA-2015:0987 - 'kernel, perf, python security update', cvss.score - 9.3
+          CESA-2015:1978 - 'kernel, perf, python security update', cvss.score - 6.1
+          CESA-2016:1633 - 'kernel, perf, python security update', cvss.score - 5.8
+          CESA-2016:0185 - 'kernel, perf, python security update', cvss.score - 7.2
+          CESA-2017:0933 - 'kernel, perf, python security update', cvss.score - 7.2
+          CESA-2017:0294 - 'kernel, perf, python security update', cvss.score - 7.2
+          CESA-2017:1308 - 'kernel, perf, python security update', cvss.score - 9.3
+          CESA-2016:1033 - 'kernel, perf, python security update', cvss.score - 7.2
+          CESA-2016:0064 - 'kernel, perf, python security update', cvss.score - 7.2
+          CESA-2015:2552 - 'kernel, perf, python security update', cvss.score - 4.9
+          CESA-2016:1277 - 'kernel, perf, python security update', cvss.score - 7.2
+          CESA-2015:1137 - 'kernel, perf, python security update', cvss.score - 7.2
+          CESA-2015:1778 - 'kernel, perf, python security update', cvss.score - 7.8
+          CESA-2015:0726 - 'kernel, perf, python security update', cvss.score - 10.0
+          CESA-2016:2574 - 'kernel, perf, python security update', cvss.score - 10
+          CESA-2015:2152 - 'kernel, perf, python security update', cvss.score - 7.2
+          CESA-2016:1847 - 'kernel, perf, python security update', cvss.score - 7.2
+          CESA-2016:2047 - 'kernel, perf, python security update', cvss.score - 7.8
+          CESA-2016:1539 - 'kernel, perf, python security update', cvss.score - 7.2
+          CESA-2015:1534 - 'kernel, perf, python security update', cvss.score - 6.9
+          CESA-2017:0386 - 'kernel, perf, python security update', cvss.score - 7.2
+          CESA-2015:0290 - 'kernel, perf, python security update', cvss.score - 7.2
+      binutils-2.23.52.0.1-16.el7.x86_64
+          CESA-2015:2079 - 'binutils security update', cvss.score - 7.5
+      sudo-1.8.6p7-11.el7.x86_64
+          CESA-2016:2872 - 'sudo security update', cvss.score - 6.9
+          CESA-2016:2593 - 'sudo security update', cvss.score - 4.9
+          CESA-2017:1382 - 'sudo security update', cvss.score - 0.0
+      kernel-3.10.0-123.20.1.el7.x86_64
+          CESA-2016:2098 - 'kernel, perf, python security update', cvss.score - 7.2
+          CESA-2017:0086 - 'kernel, perf, python security update', cvss.score - 10
+          CESA-2015:0987 - 'kernel, perf, python security update', cvss.score - 9.3
+          CESA-2015:1978 - 'kernel, perf, python security update', cvss.score - 6.1
+          CESA-2016:1633 - 'kernel, perf, python security update', cvss.score - 5.8
+          CESA-2016:0185 - 'kernel, perf, python security update', cvss.score - 7.2
+          CESA-2017:0933 - 'kernel, perf, python security update', cvss.score - 7.2
+          CESA-2017:0294 - 'kernel, perf, python security update', cvss.score - 7.2
+          CESA-2017:1308 - 'kernel, perf, python security update', cvss.score - 9.3
+          CESA-2016:1033 - 'kernel, perf, python security update', cvss.score - 7.2
+          CESA-2016:0064 - 'kernel, perf, python security update', cvss.score - 7.2
+          CESA-2015:2552 - 'kernel, perf, python security update', cvss.score - 4.9
+          CESA-2016:1277 - 'kernel, perf, python security update', cvss.score - 7.2
+          CESA-2015:1137 - 'kernel, perf, python security update', cvss.score - 7.2
+          CESA-2015:1778 - 'kernel, perf, python security update', cvss.score - 7.8
+          CESA-2015:0726 - 'kernel, perf, python security update', cvss.score - 10.0
+          CESA-2016:2574 - 'kernel, perf, python security update', cvss.score - 10
+          CESA-2015:2152 - 'kernel, perf, python security update', cvss.score - 7.2
+          CESA-2016:1847 - 'kernel, perf, python security update', cvss.score - 7.2
+          CESA-2016:2047 - 'kernel, perf, python security update', cvss.score - 7.8
+          CESA-2016:1539 - 'kernel, perf, python security update', cvss.score - 7.2
+          CESA-2015:1534 - 'kernel, perf, python security update', cvss.score - 6.9
+          CESA-2017:0386 - 'kernel, perf, python security update', cvss.score - 7.2
+          CESA-2015:0290 - 'kernel, perf, python security update', cvss.score - 7.2
+      libuser-0.60-5.el7.x86_64
+          CESA-2015:1483 - 'libuser security update', cvss.score - 7.2
+      pam-1.1.8-9.el7.x86_64
+          CESA-2015:1640 - 'pam security update', cvss.score - 5.8
+      libnl3-cli-3.2.21-6.el7.x86_64
+          CESA-2016:2581 - 'NetworkManager, libnl3, libnm, libnma, network, nm security update', cvss.score - 0
+      freetype-2.4.11-9.el7.x86_64
+          CESA-2015:0696 - 'freetype security update', cvss.score - 7.5
+      libblkid-2.23.2-16.el7.x86_64
+          CESA-2016:2605 - 'libblkid, libmount, libuuid, util, uuidd security update', cvss.score - 4.7
+          CESA-2017:0907 - 'libblkid, libmount, libuuid, util, uuidd security update', cvss.score - 0
+      NetworkManager-tui-0.9.9.1-29.git20140326.4dba720.el7_0.x86_64
+          CESA-2015:2315 - 'ModemManager, NetworkManager, libnm, network, nm security update', cvss.score - 5
+          CESA-2016:2581 - 'NetworkManager, libnl3, libnm, libnma, network, nm security update', cvss.score - 0
+      file-libs-5.11-21.el7.x86_64
+          CESA-2015:2155 - 'file, python security update', cvss.score - 7.5
+      vim-minimal-7.4.160-1.el7.x86_64
+          CESA-2016:2972 - 'vim security update', cvss.score - 6.8
+      sqlite-3.7.17-4.el7.x86_64
+          CESA-2015:1635 - 'lemon, sqlite security update', cvss.score - 7.5
+      python-2.7.5-16.el7.x86_64
+          CESA-2015:2101 - 'python, tkinter security update', cvss.score - 6.4
+          CESA-2016:2586 - 'python, tkinter security update', cvss.score - 10
+          CESA-2016:1626 - 'python, tkinter security update', cvss.score - 5.8
+      openldap-2.4.39-3.el7.x86_64
+          CESA-2015:1840 - 'compat, openldap security update', cvss.score - 5
+          CESA-2015:2131 - 'openldap security update', cvss.score - 5
+      firewalld-0.3.9-7.el7.noarch
+          CESA-2016:2597 - 'firewall, firewalld, python security update', cvss.score - 2.1
+      wpa_supplicant-2.0-13.el7_0.x86_64
+          CESA-2015:1090 - 'wpa_supplicant security update', cvss.score - 5.8
+      bind-license-9.9.4-14.el7_0.1.noarch
+          CESA-2015:1513 - 'bind security update', cvss.score - 7.8
+          CESA-2016:1944 - 'bind, caching security update', cvss.score - 7.8
+          CESA-2015:0672 - 'bind security update', cvss.score - 5.4
+          CESA-2016:2615 - 'bind security update', cvss.score - 5
+          CESA-2017:1095 - 'bind security update', cvss.score - 0
+          CESA-2016:0073 - 'bind, caching security update', cvss.score - 6.8
+          CESA-2015:2655 - 'bind security update', cvss.score - 5
+          CESA-2015:1705 - 'bind security update', cvss.score - 7.8
+          CESA-2017:0276 - 'bind security update', cvss.score - 0
+          CESA-2016:0459 - 'bind, caching security update', cvss.score - 5
+          CESA-2017:0062 - 'bind security update', cvss.score - 5
+          CESA-2015:1443 - 'bind security update', cvss.score - 7.8
+      curl-7.29.0-19.el7.x86_64
+          CESA-2016:2575 - 'curl, libcurl security update', cvss.score - 5
+          CESA-2015:2159 - 'curl, libcurl security update', cvss.score - 5
+      grub2-tools-2.02-0.2.10.el7.centos.1.x86_64
+          CESA-2015:2401 - 'grub2 security update', cvss.score - 2.6
+          CESA-2015:2653 - 'grub2 security update', cvss.score - 6.9
+      openssh-clients-6.4p1-8.el7.x86_64
+          CESA-2015:0425 - 'openssh, pam_ssh_agent_auth security update', cvss.score - 5.8
+          CESA-2016:0043 - 'openssh, pam_ssh_agent_auth security update', cvss.score - 4.6
+          CESA-2016:2588 - 'openssh, pam_ssh_agent_auth security update', cvss.score - 7.2
+          CESA-2016:0465 - 'openssh, pam_ssh_agent_auth security update', cvss.score - 7.5
+          CESA-2015:2088 - 'openssh, pam_ssh_agent_auth security update', cvss.score - 8.5
+      grep-2.16-1.el7.x86_64
+          CESA-2015:2111 - 'grep security update', cvss.score - 2.1
+      nss-3.16.2.3-2.el7_0.x86_64
+          CESA-2017:1100 - 'nss security update', cvss.score - 7.5
+          CESA-2015:1981 - 'nspr, nss security update', cvss.score - 7.5
+          CESA-2016:0685 - 'nspr, nss security update', cvss.score - 7.5
+          CESA-2016:0007 - 'nss security update', cvss.score - 4.3
+          CESA-2016:2779 - 'nss security update', cvss.score - 9.3
+          CESA-2015:1185 - 'nss security update', cvss.score - 4.3
+          CESA-2017:1365 - 'nss security update', cvss.score - 0.0
+      libcurl-7.29.0-19.el7.x86_64
+          CESA-2016:2575 - 'curl, libcurl security update', cvss.score - 5
+          CESA-2015:2159 - 'curl, libcurl security update', cvss.score - 5
+      policycoreutils-2.2.5-11.el7_0.1.x86_64
+          CESA-2016:2702 - 'policycoreutils security update', cvss.score - 7.2
+      xfsprogs-3.2.0-0.10.alpha2.el7.x86_64
+          CESA-2015:2151 - 'xfsprogs security update', cvss.score - 5
+      openssl-libs-1.0.1e-34.el7_0.7.x86_64
+          CESA-2016:1940 - 'openssl security update', cvss.score - 7.8
+          CESA-2015:1115 - 'openssl security update', cvss.score - 7.5
+          CESA-2016:0008 - 'openssl security update', cvss.score - 4.3
+          CESA-2015:2617 - 'openssl security update', cvss.score - 5
+          CESA-2016:0722 - 'openssl security update', cvss.score - 10.0
+          CESA-2015:0716 - 'openssl security update', cvss.score - 7.5
+          CESA-2016:0301 - 'openssl security update', cvss.score - 10
+          CESA-2017:0286 - 'openssl security update', cvss.score - 5
+          CESA-2015:1072 - 'openssl security update', cvss.score - 4.3
+      bind-libs-lite-9.9.4-14.el7_0.1.x86_64
+          CESA-2015:1513 - 'bind security update', cvss.score - 7.8
+          CESA-2016:1944 - 'bind, caching security update', cvss.score - 7.8
+          CESA-2015:0672 - 'bind security update', cvss.score - 5.4
+          CESA-2016:2615 - 'bind security update', cvss.score - 5
+          CESA-2017:1095 - 'bind security update', cvss.score - 0
+          CESA-2016:0073 - 'bind, caching security update', cvss.score - 6.8
+          CESA-2015:2655 - 'bind security update', cvss.score - 5
+          CESA-2015:1705 - 'bind security update', cvss.score - 7.8
+          CESA-2017:0276 - 'bind security update', cvss.score - 0
+          CESA-2016:0459 - 'bind, caching security update', cvss.score - 5
+          CESA-2017:0062 - 'bind security update', cvss.score - 5
+          CESA-2015:1443 - 'bind security update', cvss.score - 7.8
+      cpio-2.11-22.el7.x86_64
+          CESA-2015:2108 - 'cpio security update', cvss.score - 5
+
+
+Finished scanning 2 host(s). 2 Hosts are vulnerable!
