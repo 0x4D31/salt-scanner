@@ -31,6 +31,8 @@ Vulnerability Scanner based on Vulners Audit API and Salt Open
 
 + Writing Output to File: 20170609-115923_b0575ead-c5f1-4ef1-9439-7249afa9d9e6.txt
 ```
+### Slack Alert:
+![Salt-Scanner](https://github.com/0x4D31/salt-scanner/blob/master/docs/slack-alert_full.jpg)
 
 ### TODO:
 + Documentation
