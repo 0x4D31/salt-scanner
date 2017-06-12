@@ -36,4 +36,5 @@ Vulnerability Scanner based on Vulners Audit API and Salt Open
 
 ### TODO:
 + Documentation
-+ ...
++ Clean up the code and add some error handling
++ Use Salt Grains for getting the OS info and installed packages
