@@ -268,7 +268,7 @@ def slack_alerter(host, rd):
         else:
             for sev, hosts in rd.iteritems():
                 vulnhosts = "\n".join(hosts)
-                if sev == ("Critical" or "High"):
+                if sev in ("Critical", "High"):
                     color = "danger"
                 elif sev == "Medium":
                     color = "warning"
