@@ -1,8 +1,12 @@
 # salt-scanner
-Vulnerability Scanner based on Vulners Audit API and Salt Open
+A linux vulnerability scanner based on Vulners Audit API and Salt Open, with Slack notifications.
 
 ### Test:
 ```
+[root@localhost ~]# python -V; pip freeze|grep salt; pip freeze|grep slackclient
+Python 2.7.5
+salt==2016.11.5
+slackclient==1.0.5
 [root@localhost ~]# sudo SLACK_API_TOKEN="EXAMPLETOKEN" python salt-scanner.py
 
 ===========================================================
