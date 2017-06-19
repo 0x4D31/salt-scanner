@@ -52,5 +52,6 @@ slackclient==1.0.5
 + Clean up the code and add some error handling
 + Use Salt Grains for getting the OS info and installed packages
 
---
+---
+
 [1] Salt in 10 Minutes: https://docs.saltstack.com/en/latest/topics/tutorials/walkthrough.html
