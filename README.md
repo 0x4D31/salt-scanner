@@ -1,7 +1,13 @@
 # salt-scanner
 A linux vulnerability scanner based on Vulners Audit API and Salt Open, with Slack notifications.
 
-### Test:
+## Requirements
+* [Salt Open](https://saltstack.com/salt-open-source/) (salt-master, salt-minion)¹
+* Python 2.7
+* Salt (```pip install salt==2016.11.5```)
+* Slackclient (```pip install slackclient==1.0.5```)
+
+## Usage
 ```
 [root@localhost ~]# python -V; pip freeze|grep salt; pip freeze|grep slackclient
 Python 2.7.5
@@ -35,13 +41,16 @@ slackclient==1.0.5
 
 + Writing Output to File: 20170609-115923_b0575ead-c5f1-4ef1-9439-7249afa9d9e6.txt
 ```
-### Slack Alert:
+## Slack Alert
 ![Salt-Scanner](https://github.com/0x4D31/salt-scanner/blob/master/docs/slack-alert_full.jpg)
 
-### TODO:
+## TODO
 + Documentation
 + More alerting modules
    - JIRA
    - OpsGenie / PagerDuty
 + Clean up the code and add some error handling
 + Use Salt Grains for getting the OS info and installed packages
+
+--
+[1] Salt in 10 Minutes: https://docs.saltstack.com/en/latest/topics/tutorials/walkthrough.html
