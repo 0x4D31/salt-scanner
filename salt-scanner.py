@@ -2,6 +2,7 @@
 
 from collections import defaultdict
 from slackclient import SlackClient
+from jira import JIRA
 import json
 import os
 import time
@@ -38,6 +39,18 @@ slack_alert = False
 slack_api_token = "SLAKCAPITOKENEXAMPLE"
 # Use "#something" for public channels or "something" for private channels
 slack_channel = "#vulners"
+
+# JIRA Alert - create an issue based on the scan result
+jira_alert = False
+jira_server = "https://yourcompany.atlassian.net"
+jira_user = "user"
+jira_pass = "pass"
+issue_type = "Task"
+issue_projectKey = "VM"
+issue_priority = "Critical"
+issue_summary = "New issue from Salt-Scanner"
+# minimum CVSS score for creating a JIRA issue
+issue_score = 7
 
 ###########################################################################
 
@@ -111,9 +124,16 @@ def sendVulnRequest(url, payload):
 
 def audit(packagesDict, osName, osVer):
     global hcount, vhcount
+    # vhosts contains the list of vulnerable hosts by severity
+    # {'SEVERITY': [list of hosts]}
     vhosts = defaultdict(list)
+    # vdict contains the list of vulnerable hosts, overall CVSS score & vector,
+    # and vulnerable packages. Will use this for creating JIRA issues and etc.
+    # {'HOST': {'cvss_score':'SCORE', 'cvss_vector':'VECTOR',
+    #  'vuln_pkgs': 'list of vulnerable packages'}}
+    vdict = defaultdict(dict)
     now = time.strftime('%a, %d %b %Y %H:%M:%S %Z', time.localtime())
-    starttext = ("{:=^36}\nScan started at {}\n{:=^36}\n:ghost: Scan Results:").format("",now,"")
+    starttext = ("{:=^36}\nScan started at {}\n{:=^36}\n:ghost: Scan Results:").format("", now, "")
     if slack_alert:
         slack_alerter(None, starttext)
     filename = ("{}_{}.txt").format(time.strftime("%Y%m%d-%H%M%S", time.localtime()), str(uuid.uuid4()))
@@ -144,10 +164,16 @@ def audit(packagesDict, osName, osVer):
                 vhcount += 1
                 if slack_alert:
                     slack_alerter(key, response)
-                cvss = response.get('data').get('cvss').get('score')
-                if cvss >= 7:
-                    severity = "Critical" if cvss >= 9 else "High"
-                elif 4 <= cvss < 7:
+                cvss_vector = response.get('data').get('cvss').get('vector')
+                cvss_score = response.get('data').get('cvss').get('score')
+                vuln_pkgs = ",".join(response.get('data').get('packages'))
+                if jira_alert and cvss_score >= issue_score:
+                    vdict[key]['cvss_score'] = cvss_score
+                    vdict[key]['cvss_vector'] = cvss_vector
+                    vdict[key]['vuln_pkgs'] = vuln_pkgs
+                if cvss_score >= 7:
+                    severity = "Critical" if cvss_score >= 9 else "High"
+                elif 4 <= cvss_score < 7:
                     severity = "Medium"
                 else:
                     severity = "Low"
@@ -157,7 +183,7 @@ def audit(packagesDict, osName, osVer):
                 print("   - {} Vulnerable Packages Found - Severity: {}".format(vpcount, severity))
                 vhosts[severity].append(key)
                 with open(file, 'a') as f:
-                    f.write("\n\n+ Host: {}\n    CVSS Score: {}    Severity: {}\n\n    Vulnerable packages:\n".format(key, cvss, severity))
+                    f.write("\n\n+ Host: {}\n    CVSS Score: {}    Severity: {}\n\n    Vulnerable packages:\n".format(key, cvss_score, severity))
                 payload = {'id': vulnsFound}
                 allVulnsInfo = sendVulnRequest(VULNERS_LINKS['bulletin'], payload)
                 vulnInfoFound = allVulnsInfo['result'] == 'OK'
@@ -178,7 +204,8 @@ def audit(packagesDict, osName, osVer):
                         f.write("\n".join(packageVulns) + "\n")
         else:
             print("Error - %s" % response.get('data').get('error'))
-
+    if jira_alert:
+        jira_createIssue(vdict)
     correct_words = "Hosts are" if vhcount >= 1 else "Host is"
     endtext = "Finished scanning {} host(s). {} {} vulnerable!".format(hcount, vhcount, correct_words)
     print("\n+ {}".format(endtext))
@@ -329,6 +356,24 @@ def slack_alerter(host, rd):
                 )
                 if not response['ok']:
                     print("Slack Error: {}".format(response['error']))
+
+
+def jira_createIssue(result):
+    jira_options = {'server': jira_server}
+    jira = JIRA(options=jira_options, basic_auth=(jira_user, jira_pass))
+    issue_description = "List of the vulnerable hosts: \n"
+    for host, value in result.iteritems():
+        issue_description += "[+] {}\n   CVSS Score: {}\n   CVSS Vector: {}\n   Packages: {}\n".format(
+            host, value['cvss_score'], value['cvss_vector'], value['vuln_pkgs'])
+    issue_dict = {
+        'project': {'key': issue_projectKey},
+        'summary': issue_summary,
+        'description': issue_description,
+        'issuetype': {'name': issue_type},
+        'priority': {'name': issue_priority}
+    }
+    new_issue = jira.create_issue(fields=issue_dict)
+    print "\n+ JIRA Issue: {}".format(new_issue)
 
 
 def main():
