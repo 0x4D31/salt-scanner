@@ -4,15 +4,11 @@ A linux vulnerability scanner based on Vulners Audit API and Salt Open, with Sla
 ## Requirements
 * [Salt Open](https://saltstack.com/salt-open-source/) (salt-master, salt-minion)¹
 * Python 2.7
-* Salt (```pip install salt==2016.11.5```)
-* Slackclient (```pip install slackclient==1.0.5```)
+* Salt _(you may need to install gcc, gcc-c++, python dev)_
+* Slackclient
 
 ## Usage
 ```
-[root@localhost ~]# python -V; pip freeze|grep salt; pip freeze|grep slackclient
-Python 2.7.5
-salt==2016.11.5
-slackclient==1.0.5
 [root@localhost ~]# sudo SLACK_API_TOKEN="EXAMPLETOKEN" python salt-scanner.py
 
 ===========================================================
