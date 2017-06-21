@@ -2,21 +2,20 @@
 
 from collections import defaultdict
 from slackclient import SlackClient
-
-__author__ = 'Adel Ka (0x4d31)'
-__version__ = '0.1'
-
 import json
 import os
 import time
 import urllib2
 import salt.client
 import uuid
+import sys
 try:
     import urllib.request as urllib2
 except ImportError:
     import urllib2
 
+__author__ = 'Adel "0x4d31" Ka'
+__version__ = '0.1'
 
 #############################[ configuration ]#############################
 
@@ -29,13 +28,16 @@ default_os_ver = None
 # Bash glob (e.g. "prod-db*") or python list of hosts (e.g. "host1,host2")
 hosts_list = "*"
 
-# Set it for sending slack alerts
-slack_alert = True
-# Use "#something" for public channels or "something" for private channels
-slack_channel = "#vulners"
-
 # Leave it empty to write output to the current directory
 output_filepath = ""
+
+# Slack Alert
+slack_alert = False
+# Set your Slack API Token here.
+# Alternatively, you can use the environment variable SLACK_API_TOKEN
+slack_api_token = "SLAKCAPITOKENEXAMPLE"
+# Use "#something" for public channels or "something" for private channels
+slack_channel = "#vulners"
 
 ###########################################################################
 
@@ -190,25 +192,48 @@ def audit(packagesDict, osName, osVer):
         slack_fileUpload(filename, file)
 
 
+def slack_tokenCheck():
+    if slack_alert:
+        try:
+            slack_api_token
+        except NameError:
+            if "SLACK_API_TOKEN" in os.environ:
+                return
+            else:
+                print("Error: Missing Slack API Token")
+                sys.exit(1)
+
+
 def slack_fileUpload(filename, file):
-    slack_token = os.environ["SLACK_API_TOKEN"]
-    sc = SlackClient(slack_token)
-    sc.api_call('files.upload', channels=slack_channel, filename=filename, file=open(file, 'rb'), title="Full scan results")
+    global slack_api_token
+    try:
+        slack_api_token
+    except NameError:
+        slack_api_token = os.environ["SLACK_API_TOKEN"]
+    sc = SlackClient(slack_api_token)
+    response = sc.api_call('files.upload', channels=slack_channel, filename=filename, file=open(file, 'rb'), title="Full scan results")
+    if not response['ok']:
+        print("Slack Error: {}".format(response['error']))
 
 
 def slack_alerter(host, rd):
-    global id
-    slack_token = os.environ["SLACK_API_TOKEN"]
-    sc = SlackClient(slack_token)
+    global id, slack_api_token
+    try:
+        slack_api_token
+    except NameError:
+        slack_api_token = os.environ["SLACK_API_TOKEN"]
+    sc = SlackClient(slack_api_token)
 
     if host is not None:
         if rd == "ok":
-            sc.api_call(
+            response = sc.api_call(
                 "chat.postMessage",
                 channel=slack_channel,
                 text=("Host _%s_ is not vulnerable." % host),
                 thread_ts=id
             )
+            if not response['ok']:
+                print("Slack Error: {}".format(response['error']))
         else:
             vpcount = 0
             for vp in rd.get('data').get('packages'):
@@ -250,13 +275,15 @@ def slack_alerter(host, rd):
                 "footer_icon": "https://pbs.twimg.com/profile_images/711948370332545025/0A-995CX.jpg",
                 "ts": id
             }]
-            sc.api_call(
+            response = sc.api_call(
                 "chat.postMessage",
                 channel=slack_channel,
                 text=("Host _%s_ is vulnerable :scream:" % host),
                 attachments=json.dumps(att),
                 thread_ts=id
             )
+            if not response['ok']:
+                print("Slack Error: {}".format(response['error']))
     else:
         if type(rd) is str:
             response = sc.api_call(
@@ -264,7 +291,11 @@ def slack_alerter(host, rd):
                 channel=slack_channel,
                 text=(rd)
             )
-            id = response['ts']
+            if not response['ok']:
+                print("Slack Error: {}".format(response['error']))
+                sys.exit(1)
+            else:
+                id = response['ts']
         else:
             for sev, hosts in rd.iteritems():
                 vulnhosts = "\n".join(hosts)
@@ -289,17 +320,20 @@ def slack_alerter(host, rd):
                     "footer_icon": "https://pbs.twimg.com/profile_images/711948370332545025/0A-995CX.jpg",
                     "ts": id
                 }]
-                sc.api_call(
+                response = sc.api_call(
                     "chat.postMessage",
                     channel=slack_channel,
                     text=("Summary Report:"),
                     attachments=json.dumps(att),
                     thread_ts=id
                 )
+                if not response['ok']:
+                    print("Slack Error: {}".format(response['error']))
 
 
 def main():
     os_name = os_ver = ""
+    slack_tokenCheck()
     if all([default_os_name, default_os_ver]):
         print("+ Default OS: {}, Version: {}".format(default_os_name, default_os_ver))
         os_name, os_ver = default_os_name, default_os_ver
