@@ -1,3 +1,4 @@
 salt==2016.11.5
 slackclient==1.0.5
 jira
+opsgenie-sdk
