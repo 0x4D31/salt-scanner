@@ -2,6 +2,10 @@
 
 from collections import defaultdict
 from slackclient import SlackClient
+from opsgenie.swagger_client import AlertApi
+from opsgenie.swagger_client import configuration
+from opsgenie.swagger_client.rest import ApiException
+from opsgenie.swagger_client.models import *
 from jira import JIRA
 import json
 import os
@@ -40,17 +44,30 @@ slack_api_token = "SLAKCAPITOKENEXAMPLE"
 # Use "#something" for public channels or "something" for private channels
 slack_channel = "#vulners"
 
-# JIRA Alert - create an issue based on the scan result
+# Minimum CVSS score for creating a JIRA issue or OpsGenie alert
+alert_score = 7
+
+# JIRA Alert
+#  creates an issue per scan (not per vulnerable host)
 jira_alert = False
 jira_server = "https://yourcompany.atlassian.net"
 jira_user = "user"
 jira_pass = "pass"
 issue_type = "Task"
 issue_projectKey = "VM"
-issue_priority = "Critical"
 issue_summary = "New issue from Salt-Scanner"
-# minimum CVSS score for creating a JIRA issue
-issue_score = 7
+issue_priority = "Critical"
+
+# OpsGenie Alert
+#  creates an alert per scan (not per vulnerable host)
+opsgenie_alert = False
+opsgenie_api_key = "d94de12d-4ds1-4d40-b211-EXAMPLE"
+opsgenie_taglist = ['security', 'devops', 'vuln']
+opsgenie_entity = "Prod-servers"
+opsgenie_message = "New alert from Salt-Scanner"
+# Priority of the alert. Should be one of P1, P2, P3 (default), P4, or P5:
+#   P1-Critical, P2-High, P3-Moderate, P4-Low, P5-Informational
+opsgenie_priority = "P1"
 
 ###########################################################################
 
@@ -167,7 +184,7 @@ def audit(packagesDict, osName, osVer):
                 cvss_vector = response.get('data').get('cvss').get('vector')
                 cvss_score = response.get('data').get('cvss').get('score')
                 vuln_pkgs = ",".join(response.get('data').get('packages'))
-                if jira_alert and cvss_score >= issue_score:
+                if (jira_alert or opsgenie_alert) and cvss_score >= alert_score:
                     vdict[key]['cvss_score'] = cvss_score
                     vdict[key]['cvss_vector'] = cvss_vector
                     vdict[key]['vuln_pkgs'] = vuln_pkgs
@@ -204,19 +221,21 @@ def audit(packagesDict, osName, osVer):
                         f.write("\n".join(packageVulns) + "\n")
         else:
             print("Error - %s" % response.get('data').get('error'))
-    if jira_alert:
-        jira_createIssue(vdict)
     correct_words = "Hosts are" if vhcount >= 1 else "Host is"
     endtext = "Finished scanning {} host(s). {} {} vulnerable!".format(hcount, vhcount, correct_words)
-    print("\n+ {}".format(endtext))
+    print("\n+ {}\n".format(endtext))
     with open(file, 'a') as f:
         f.write("\n\n{}".format(endtext))
-    print("\n+ Writing Output to File: {}".format(file))
+    print("+ Output file created: {}".format(file))
     if slack_alert:
         slack_alerter(None, endtext)
         if vhosts:
             slack_alerter(None, vhosts)
         slack_fileUpload(filename, file)
+    if jira_alert:
+        jira_alerter(vdict)
+    if opsgenie_alert:
+        opsgenie_alerter(vdict)
 
 
 def slack_tokenCheck():
@@ -241,6 +260,8 @@ def slack_fileUpload(filename, file):
     response = sc.api_call('files.upload', channels=slack_channel, filename=filename, file=open(file, 'rb'), title="Full scan results")
     if not response['ok']:
         print("Slack Error: {}".format(response['error']))
+    else:
+        print("+ Full report uploaded to Slack")
 
 
 def slack_alerter(host, rd):
@@ -358,7 +379,7 @@ def slack_alerter(host, rd):
                     print("Slack Error: {}".format(response['error']))
 
 
-def jira_createIssue(result):
+def jira_alerter(result):
     jira_options = {'server': jira_server}
     jira = JIRA(options=jira_options, basic_auth=(jira_user, jira_pass))
     issue_description = "List of the vulnerable hosts: \n"
@@ -373,7 +394,31 @@ def jira_createIssue(result):
         'priority': {'name': issue_priority}
     }
     new_issue = jira.create_issue(fields=issue_dict)
-    print "\n+ JIRA Issue: {}".format(new_issue)
+    print("+ JIRA issue created: {}".format(new_issue))
+
+
+def opsgenie_alerter(result):
+    configuration.api_key['Authorization'] = opsgenie_api_key
+    configuration.api_key_prefix['Authorization'] = 'GenieKey'
+    issue_description = "List of the vulnerable hosts: \n"
+    for host, value in result.iteritems():
+        issue_description += "[+] {}\n   CVSS Score: {}\n   CVSS Vector: {}\n   Packages: {}\n".format(
+            host, value['cvss_score'], value['cvss_vector'], value['vuln_pkgs'])
+    body = CreateAlertRequest(
+        message=opsgenie_message,
+        description=issue_description,
+        tags=opsgenie_taglist,
+        entity=opsgenie_entity,
+        priority=opsgenie_priority,
+        source='Salt-Scanner',
+        # teams=[TeamRecipient(name='ops_team')],
+        # visible_to=[TeamRecipient(name='ops_team', type='team')],
+        note='Alert created')
+    try:
+        AlertApi().create_alert(body=body)
+        print("+ OpsGenie alert created")
+    except ApiException as err:
+        print("OpsGenie - Exception when calling AlertApi->create_alert: %s" % err)
 
 
 def main():
