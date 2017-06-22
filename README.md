@@ -1,12 +1,18 @@
 # salt-scanner
 A linux vulnerability scanner based on Vulners Audit API and Salt Open, with Slack notifications and JIRA integration.
 
+## Features
+* Slack notification and report upload
+* JIRA integration
+* OpsGenie integration
+
 ## Requirements
 * [Salt Open](https://saltstack.com/salt-open-source/) (salt-master, salt-minion)¹
 * Python 2.7
-* Salt _(you may need to install gcc, gcc-c++, python dev)_
-* Slackclient
-* Jira
+* salt _(you may need to install gcc, gcc-c++, python dev)_
+* slackclient
+* jira
+* opsgenie-sdk
 
 ## Usage
 ```
@@ -31,23 +37,20 @@ A linux vulnerability scanner based on Vulners Audit API and Salt Open, with Sla
    - Total Packages: 357
    - 6 Vulnerable Packages Found - Severity: Low
 + Started Scanning '10.10.10.56'...
-   - Total Packages: 391
+   - Total Packages: 392
    - 6 Vulnerable Packages Found - Severity: Critical
-
-+ JIRA Issue: VM-16
 
 + Finished scanning 2 host(s). 2 Hosts are vulnerable!
 
-+ Writing Output to File: 20170621-155936_fd56e3e0-16bb-41b0-8e96-90b6fe542aa9.txt
++ Output file created: 20170622-093138_232826a7-983f-499b-ad96-7b8f1a75c1d7.txt
++ Full report uploaded to Slack
++ JIRA Issue created: VM-16
++ OpsGenie alert created
 ```
 ## Slack Alert
 ![Salt-Scanner](https://github.com/0x4D31/salt-scanner/blob/master/docs/slack-alert_full.jpg)
 
 ## TODO
-+ Documentation
-+ More alerting modules
-   - JIRA ✓
-   - OpsGenie / PagerDuty
 + Clean up the code and add some error handling
 + Use Salt Grains for getting the OS info and installed packages
 
