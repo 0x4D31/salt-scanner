@@ -14,6 +14,7 @@ import urllib2
 import salt.client
 import uuid
 import sys
+import re
 try:
     import urllib.request as urllib2
 except ImportError:
@@ -127,6 +128,12 @@ def get_packages(osName, hosts):
     return client.cmd(hosts, 'cmd.run', [cmd], expr_form=eform) if cmd else None
 
 
+def get_kernel(host):
+    client = salt.client.LocalClient()
+    res = client.cmd(host, 'cmd.run', ["uname -r"])
+    return "kernel-{}".format(res[host])
+
+
 def sendVulnRequest(url, payload):
     req = urllib2.Request(url)
     req.add_header('Content-Type', 'application/json')
@@ -159,7 +166,15 @@ def audit(packagesDict, osName, osVer):
         f.write("{}\n".format(starttext))
     for key, value in packagesDict.iteritems():
         hcount += 1
-        pkgs = value.splitlines()
+        init_pkgs = value.splitlines()
+        # remove kernel packages from the list
+        r = re.compile('kernel-[0-9]')
+        pkgs = filter(lambda i: not r.match(i), init_pkgs)
+        # OR pkgs = [i for i in init_pkgs if not r.match(i)]
+        # add kernel package to the list, based on uname:
+        kernelpkg = get_kernel(key)
+        if kernelpkg:
+            pkgs.append(kernelpkg)
         print("+ Started Scanning '{}'...".format(key))
         print("   - Total Packages: {}".format(len(pkgs)))
         payload = {'os': osName,
@@ -239,7 +254,6 @@ def audit(packagesDict, osName, osVer):
 
 
 def slack_tokenCheck():
-    if slack_alert:
         try:
             slack_api_token
         except NameError:
@@ -423,7 +437,8 @@ def opsgenie_alerter(result):
 
 def main():
     os_name = os_ver = ""
-    slack_tokenCheck()
+    if slack_alert:
+        slack_tokenCheck()
     if all([default_os_name, default_os_ver]):
         print("+ Default OS: {}, Version: {}".format(default_os_name, default_os_ver))
         os_name, os_ver = default_os_name, default_os_ver
