@@ -15,6 +15,8 @@ import salt.client
 import uuid
 import sys
 import re
+import argparse
+import tempfile
 try:
     import urllib.request as urllib2
 except ImportError:
@@ -32,10 +34,7 @@ default_os_name = None
 default_os_ver = None
 
 # Bash glob (e.g. "prod-db*") or python list of hosts (e.g. "host1,host2")
-hosts_list = "*"
-
-# Leave it empty to write output to the current directory
-output_filepath = ""
+target_hosts = "*"
 
 # Slack Alert
 slack_alert = False
@@ -161,7 +160,7 @@ def audit(packagesDict, osName, osVer):
     if slack_alert:
         slack_alerter(None, starttext)
     filename = ("{}_{}.txt").format(time.strftime("%Y%m%d-%H%M%S", time.localtime()), str(uuid.uuid4()))
-    file = ("{}{}").format(output_filepath, filename)
+    file = os.path.join(tempfile.gettempdir(), filename)
     with open(file, 'w') as f:
         f.write("{}\n".format(starttext))
     for key, value in packagesDict.iteritems():
@@ -435,19 +434,44 @@ def opsgenie_alerter(result):
         print("OpsGenie - Exception when calling AlertApi->create_alert: %s" % err)
 
 
+def parse_cmd_line_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        '-t', '--target_hosts',
+        type=str,
+        default=target_hosts,
+        #help='Bash glob (e.g."prod-db*") or python list of hosts (e.g."host1,host2")'
+    )
+    parser.add_argument(
+        '-oN', '--os_name',
+        type=str,
+        default=default_os_name,
+        #help='Default OS name'
+    )
+    parser.add_argument(
+        '-oV', '--os_version',
+        type=str,
+        default=default_os_ver,
+        #help='Default OS version'
+    )
+    return parser.parse_args()
+
+
 def main():
-    os_name = os_ver = ""
+    args = parse_cmd_line_args()
+    # os_name = os_ver = ""
     if slack_alert:
         slack_tokenCheck()
-    if all([default_os_name, default_os_ver]):
-        print("+ Default OS: {}, Version: {}".format(default_os_name, default_os_ver))
-        os_name, os_ver = default_os_name, default_os_ver
+    if all([args.os_name, args.os_version]):
+        print("+ Default OS: {}, Version: {}".format(
+            args.os_name, args.os_version
+        ))
         print("+ Getting the Installed Packages...")
-        pdict = get_packages(os_name, hosts_list)
-        audit(pdict, os_name, os_ver)
+        pdict = get_packages(args.os_name, args.target_hosts)
+        audit(pdict, args.os_name, args.os_version)
     else:
         print("+ No default OS is configured. Detecting OS...")
-        os_dict = get_os(hosts_list)
+        os_dict = get_os(args.target_hosts)
         if os_dict:
             print("+ Detected Operating Systems:")
             for os_nameVer, hlist in os_dict.iteritems():
