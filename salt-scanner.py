@@ -143,7 +143,7 @@ def sendVulnRequest(url, payload):
     return responseData
 
 
-def audit(packagesDict, osName, osVer):
+def audit(packagesDict, osName, osVer, tgt_hosts):
     global hcount, vhcount
     # vhosts contains the list of vulnerable hosts by severity
     # {'SEVERITY': [list of hosts]}
@@ -234,7 +234,9 @@ def audit(packagesDict, osName, osVer):
         else:
             print("Error - %s" % response.get('data').get('error'))
     correct_words = "Hosts are" if vhcount >= 1 else "Host is"
-    endtext = "Finished scanning {} host(s). {} {} vulnerable!".format(hcount, vhcount, correct_words)
+    endtext = "Finished scanning {} hosts (target hosts: '{}').\n{} {} vulnerable!".format(
+        hcount, tgt_hosts, vhcount, correct_words
+    )
     print("\n+ {}\n".format(endtext))
     with open(file, 'a') as f:
         f.write("\n\n{}".format(endtext))
@@ -244,9 +246,9 @@ def audit(packagesDict, osName, osVer):
         if vhosts:
             slack_alerter(None, vhosts)
         slack_fileUpload(filename, file)
-    if jira_alert:
+    if jira_alert and vdict:
         jira_alerter(vdict)
-    if opsgenie_alert:
+    if opsgenie_alert and vdict:
         opsgenie_alerter(vdict)
 
 
@@ -438,26 +440,28 @@ def parse_cmd_line_args():
         '-t', '--target-hosts',
         type=str,
         default=target_hosts
-        #help='Bash glob (e.g."prod-db*") or python list of hosts (e.g."host1,host2")'
+        # help='Bash glob (e.g."prod-db*") or python list of hosts (e.g."host1,host2")'
     )
     parser.add_argument(
         '-tF', '--target-form',
         type=str,
         default='glob',
         choices=["glob", "list", "grain"]
-        #help='Bash glob (e.g."prod-db*") or python list of hosts (e.g."host1,host2"), or Salt grains (e.g. "os:amazon")'
+        # help='Bash glob (e.g."prod-db*") or \
+        # python list of hosts (e.g."host1,host2"), or \
+        # Salt grains (e.g. "os:amazon" or "ec2_tags:role:webapp")'
     )
     parser.add_argument(
         '-oN', '--os-name',
         type=str,
         default=default_os_name
-        #help='Default OS name'
+        # help='Default OS name'
     )
     parser.add_argument(
         '-oV', '--os-version',
         type=str,
         default=default_os_ver
-        #help='Default OS version'
+        # help='Default OS version'
     )
     return parser.parse_args()
 
@@ -474,7 +478,7 @@ def main():
         print("+ Getting the Installed Packages...")
         pdict = get_packages(args.os_name, args.target_hosts, args.target_form)
         if pdict:
-            audit(pdict, args.os_name, args.os_version)
+            audit(pdict, args.os_name, args.os_version, args.target_hosts)
         else:
             print("Error: package list is empty")
     else:
@@ -489,7 +493,7 @@ def main():
                 hosts = ','.join(hlist)
                 pdict = get_packages(os_info[0], hosts, "list")
                 if pdict:
-                    audit(pdict, os_info[0], os_info[1])
+                    audit(pdict, os_info[0], os_info[1], args.target_hosts)
                 else:
                     print("Error: package list is empty")
 
