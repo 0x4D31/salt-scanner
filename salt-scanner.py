@@ -445,7 +445,7 @@ def parse_cmd_line_args():
         type=str,
         default='glob',
         choices=["glob", "list", "grain"]
-        #help='Bash glob (e.g."prod-db*") or python list of hosts (e.g."host1,host2"), or Salt grains'
+        #help='Bash glob (e.g."prod-db*") or python list of hosts (e.g."host1,host2"), or Salt grains (e.g. "os:amazon")'
     )
     parser.add_argument(
         '-oN', '--os-name',
