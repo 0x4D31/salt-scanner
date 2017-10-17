@@ -92,10 +92,9 @@ ASCII = r"""
 hcount = vhcount = id = 0
 
 
-def get_os(hosts):
+def get_os(hosts, form):
     client = salt.client.LocalClient()
-    eform = "glob" if '*' in hosts else "list"
-    result = client.cmd(hosts, 'cmd.run', ['cat /etc/os-release'], expr_form=eform)
+    result = client.cmd(hosts, 'cmd.run', ['cat /etc/os-release'], expr_form=form)
     if result:
         hostsDict = defaultdict(dict)
         osDict = defaultdict(list)
@@ -115,16 +114,15 @@ def get_os(hosts):
         return osDict
 
 
-def get_packages(osName, hosts):
+def get_packages(osName, hosts, form):
     client = salt.client.LocalClient()
-    eform = "glob" if '*' in hosts else "list"
     if osName in ('debian', 'ubuntu', 'kali'):
         cmd = "dpkg-query -W -f='${Package} ${Version} ${Architecture}\n'"
     elif osName in ('rhel', 'centos', 'oraclelinux', 'suse', 'fedora', 'amazon linux'):
         cmd = "rpm -qa"
     else:
         cmd = None
-    return client.cmd(hosts, 'cmd.run', [cmd], expr_form=eform) if cmd else None
+    return client.cmd(hosts, 'cmd.run', [cmd], expr_form=form) if cmd else None
 
 
 def get_kernel(host):
@@ -437,21 +435,28 @@ def opsgenie_alerter(result):
 def parse_cmd_line_args():
     parser = argparse.ArgumentParser()
     parser.add_argument(
-        '-t', '--target_hosts',
+        '-t', '--target-hosts',
         type=str,
-        default=target_hosts,
+        default=target_hosts
         #help='Bash glob (e.g."prod-db*") or python list of hosts (e.g."host1,host2")'
     )
     parser.add_argument(
-        '-oN', '--os_name',
+        '-tF', '--target-form',
         type=str,
-        default=default_os_name,
+        default='glob',
+        choices=["glob", "list", "grain"]
+        #help='Bash glob (e.g."prod-db*") or python list of hosts (e.g."host1,host2"), or Salt grains'
+    )
+    parser.add_argument(
+        '-oN', '--os-name',
+        type=str,
+        default=default_os_name
         #help='Default OS name'
     )
     parser.add_argument(
-        '-oV', '--os_version',
+        '-oV', '--os-version',
         type=str,
-        default=default_os_ver,
+        default=default_os_ver
         #help='Default OS version'
     )
     return parser.parse_args()
@@ -467,11 +472,11 @@ def main():
             args.os_name, args.os_version
         ))
         print("+ Getting the Installed Packages...")
-        pdict = get_packages(args.os_name, args.target_hosts)
+        pdict = get_packages(args.os_name, args.target_hosts, args.target_form)
         audit(pdict, args.os_name, args.os_version)
     else:
         print("+ No default OS is configured. Detecting OS...")
-        os_dict = get_os(args.target_hosts)
+        os_dict = get_os(args.target_hosts, args.target_form)
         if os_dict:
             print("+ Detected Operating Systems:")
             for os_nameVer, hlist in os_dict.iteritems():
@@ -479,7 +484,7 @@ def main():
                 print("   - OS Name: {}, OS Version: {}".format(os_info[0], os_info[1]))
                 print("+ Getting the Installed Packages...")
                 hosts = ','.join(hlist)
-                pdict = get_packages(os_info[0], hosts)
+                pdict = get_packages(os_info[0], hosts, "list")
                 audit(pdict, os_info[0], os_info[1])
 
 
