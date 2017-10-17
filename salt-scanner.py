@@ -77,6 +77,7 @@ VULNERS_LINKS = {'pkgChecker': 'https://vulners.com/api/v3/audit/audit/',
 
 ASCII = r"""
  ==========================================================
+  Vulnerability scanner based on Vulners API and Salt Open
  _____       _ _     _____                                 
 /  ___|     | | |   /  ___|                               
 \ `--.  __ _| | |_  \ `--.  ___ __ _ _ __  _ __   ___ _ __ 
@@ -84,8 +85,8 @@ ASCII = r"""
 /\__/ / (_| | | |_  /\__/ / (_| (_| | | | | | | |  __/ |   
 \____/ \__,_|_|\__| \____/ \___\__,_|_| |_|_| |_|\___|_|   
 
- Vulnerability scanner based on Vulners API and Salt Open
-===========================================================
+               Salt-Scanner 0.1 / by 0x4D31               
+ ==========================================================
 
 """
 
