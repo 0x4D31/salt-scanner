@@ -473,7 +473,10 @@ def main():
         ))
         print("+ Getting the Installed Packages...")
         pdict = get_packages(args.os_name, args.target_hosts, args.target_form)
-        audit(pdict, args.os_name, args.os_version)
+        if pdict:
+            audit(pdict, args.os_name, args.os_version)
+        else:
+            print("Error: package list is empty")
     else:
         print("+ No default OS is configured. Detecting OS...")
         os_dict = get_os(args.target_hosts, args.target_form)
@@ -485,7 +488,10 @@ def main():
                 print("+ Getting the Installed Packages...")
                 hosts = ','.join(hlist)
                 pdict = get_packages(os_info[0], hosts, "list")
-                audit(pdict, os_info[0], os_info[1])
+                if pdict:
+                    audit(pdict, os_info[0], os_info[1])
+                else:
+                    print("Error: package list is empty")
 
 
 if __name__ == '__main__':
