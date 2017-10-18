@@ -10,7 +10,6 @@ from jira import JIRA
 import json
 import os
 import time
-import urllib2
 import salt.client
 import uuid
 import sys
@@ -95,7 +94,11 @@ hcount = vhcount = id = 0
 
 def get_os(hosts, form):
     client = salt.client.LocalClient()
-    result = client.cmd(hosts, 'cmd.run', ['cat /etc/os-release'], expr_form=form)
+    result = client.cmd(
+        hosts, 'cmd.run',
+        ['cat /etc/os-release'],
+        expr_form=form
+    )
     if result:
         hostsDict = defaultdict(dict)
         osDict = defaultdict(list)
@@ -119,17 +122,31 @@ def get_packages(osName, hosts, form):
     client = salt.client.LocalClient()
     if osName in ('debian', 'ubuntu', 'kali'):
         cmd = "dpkg-query -W -f='${Package} ${Version} ${Architecture}\n'"
-    elif osName in ('rhel', 'centos', 'oraclelinux', 'suse', 'fedora', 'amazon linux'):
+    elif osName in ('rhel', 'centos', 'oraclelinux', 'suse',
+                    'fedora', 'amazon linux', 'amazon'):
         cmd = "rpm -qa"
     else:
         cmd = None
-    return client.cmd(hosts, 'cmd.run', [cmd], expr_form=form) if cmd else None
+    return client.cmd(
+        hosts,
+        'cmd.run',
+        [cmd],
+        expr_form=form
+    ) if cmd else None
 
 
-def get_kernel(host):
+def get_kernel(host, osName):
     client = salt.client.LocalClient()
-    res = client.cmd(host, 'cmd.run', ["uname -r"])
-    return "kernel-{}".format(res[host])
+    res = client.cmd(
+        host,
+        'cmd.run',
+        ["uname -r"]
+    )
+    if osName in ('rhel', 'centos', 'oraclelinux', 'suse',
+                  'fedora', 'amazon linux', 'amazon'):
+        return "kernel-{}".format(res[host])
+    elif osName in ('debian', 'ubuntu', 'kali'):
+        return "linux-image-{}".format(res[host])
 
 
 def sendVulnRequest(url, payload):
@@ -155,10 +172,13 @@ def audit(packagesDict, osName, osVer, tgt_hosts):
     #  'vuln_pkgs': 'list of vulnerable packages'}}
     vdict = defaultdict(dict)
     now = time.strftime('%a, %d %b %Y %H:%M:%S %Z', time.localtime())
-    starttext = ("{:=^36}\nScan started at {}\n{:=^36}\n:ghost: Scan Results:").format("", now, "")
+    starttext = ("{:=^36}\nScan started at {}\n{:=^36}\n:ghost: Scan Results:"
+                 ).format("", now, "")
     if slack_alert:
         slack_alerter(None, starttext)
-    filename = ("{}_{}.txt").format(time.strftime("%Y%m%d-%H%M%S", time.localtime()), str(uuid.uuid4()))
+    filename = ("{}_{}.txt").format(
+        time.strftime("%Y%m%d-%H%M%S", time.localtime()), str(uuid.uuid4())
+    )
     file = os.path.join(tempfile.gettempdir(), filename)
     with open(file, 'w') as f:
         f.write("{}\n".format(starttext))
@@ -167,10 +187,11 @@ def audit(packagesDict, osName, osVer, tgt_hosts):
         init_pkgs = value.splitlines()
         # remove kernel packages from the list
         r = re.compile('kernel-[0-9]')
-        pkgs = filter(lambda i: not r.match(i), init_pkgs)
+        r2 = re.compile('linux-image-[0-9]')
+        pkgs = filter(lambda i: not (r.match(i) or r2.match(i)), init_pkgs)
         # OR pkgs = [i for i in init_pkgs if not r.match(i)]
         # add kernel package to the list, based on uname:
-        kernelpkg = get_kernel(key)
+        kernelpkg = get_kernel(key, osName)
         if kernelpkg:
             pkgs.append(kernelpkg)
         print("+ Started Scanning '{}'...".format(key))
@@ -187,7 +208,8 @@ def audit(packagesDict, osName, osVer, tgt_hosts):
             if not vulnsFound:
                 print("   - No vulnerabilities found.")
                 with open(file, 'a') as f:
-                    f.write("\n\n+ Host: {}\n    No vulnerabilities found.\n".format(key))
+                    f.write("\n\n+ Host: {}\n    No vulnerabilities found.\n"
+                            .format(key))
                 if slack_alert:
                     slack_alerter(key, "ok")
             else:
@@ -197,7 +219,8 @@ def audit(packagesDict, osName, osVer, tgt_hosts):
                 cvss_vector = response.get('data').get('cvss').get('vector')
                 cvss_score = response.get('data').get('cvss').get('score')
                 vuln_pkgs = ",".join(response.get('data').get('packages'))
-                if (jira_alert or opsgenie_alert) and cvss_score >= alert_score:
+                if ((jira_alert or opsgenie_alert) and
+                        cvss_score >= alert_score):
                     vdict[key]['cvss_score'] = cvss_score
                     vdict[key]['cvss_vector'] = cvss_vector
                     vdict[key]['vuln_pkgs'] = vuln_pkgs
@@ -210,12 +233,15 @@ def audit(packagesDict, osName, osVer, tgt_hosts):
                 vpcount = 0
                 for vp in response.get('data').get('packages'):
                     vpcount += 1
-                print("   - {} Vulnerable Packages Found - Severity: {}".format(vpcount, severity))
+                print("   - {} Vulnerable Packages Found - Severity: {}"
+                      .format(vpcount, severity))
                 vhosts[severity].append(key)
                 with open(file, 'a') as f:
-                    f.write("\n\n+ Host: {}\n    CVSS Score: {}    Severity: {}\n\n    Vulnerable packages:\n".format(key, cvss_score, severity))
+                    f.write("\n\n+ Host: {}\n    CVSS Score: {}    Severity: {}\n\n    Vulnerable packages:\n"
+                            .format(key, cvss_score, severity))
                 payload = {'id': vulnsFound}
-                allVulnsInfo = sendVulnRequest(VULNERS_LINKS['bulletin'], payload)
+                allVulnsInfo = sendVulnRequest(
+                    VULNERS_LINKS['bulletin'], payload)
                 vulnInfoFound = allVulnsInfo['result'] == 'OK'
                 for package in response['data']['packages']:
                     with open(file, 'a') as f:
@@ -223,10 +249,13 @@ def audit(packagesDict, osName, osVer, tgt_hosts):
                     packageVulns = []
                     for vulns in response['data']['packages'][package]:
                         if vulnInfoFound:
-                            vulnInfo = "{id} - '{title}', cvss.score - {score}".format(id=vulns,
-                                                                                       title=allVulnsInfo['data']['documents'][vulns]['title'],
-                                                                                       score=allVulnsInfo['data']['documents'][vulns]['cvss']['score'])
-                            packageVulns.append((vulnInfo, allVulnsInfo['data']['documents'][vulns]['cvss']['score']))
+                            vulnInfo = ("{id} - '{title}', CVSS Score: {score}"
+                                        .format(id=vulns,
+                                                title=allVulnsInfo['data']['documents'][vulns]['title'],
+                                                score=allVulnsInfo['data']['documents'][vulns]['cvss']['score']))
+                            packageVulns.append(
+                                vulnInfo,
+                                allVulnsInfo['data']['documents'][vulns]['cvss']['score'])
                         else:
                             packageVulns.append((vulns, 0))
                     packageVulns = [" "*10 + x[0] for x in packageVulns]
@@ -235,9 +264,8 @@ def audit(packagesDict, osName, osVer, tgt_hosts):
         else:
             print("Error - %s" % response.get('data').get('error'))
     correct_words = "Hosts are" if vhcount >= 1 else "Host is"
-    endtext = "Finished scanning {} hosts (target hosts: '{}').\n{} {} vulnerable!".format(
-        hcount, tgt_hosts, vhcount, correct_words
-    )
+    endtext = ("Finished scanning {} hosts (target hosts: '{}').\n{} {} vulnerable!"
+               .format(hcount, tgt_hosts, vhcount, correct_words))
     print("\n+ {}\n".format(endtext))
     with open(file, 'a') as f:
         f.write("\n\n{}".format(endtext))
@@ -271,7 +299,12 @@ def slack_fileUpload(filename, file):
     except NameError:
         slack_api_token = os.environ["SLACK_API_TOKEN"]
     sc = SlackClient(slack_api_token)
-    response = sc.api_call('files.upload', channels=slack_channel, filename=filename, file=open(file, 'rb'), title="Full scan results")
+    response = sc.api_call(
+        'files.upload',
+        channels=slack_channel,
+        filename=filename,
+        file=open(file, 'rb'),
+        title="Full scan results")
     if not response['ok']:
         print("Slack Error: {}".format(response['error']))
     else:
@@ -398,8 +431,11 @@ def jira_alerter(result):
     jira = JIRA(options=jira_options, basic_auth=(jira_user, jira_pass))
     issue_description = "List of the vulnerable hosts: \n"
     for host, value in result.iteritems():
-        issue_description += "[+] {}\n   CVSS Score: {}\n   CVSS Vector: {}\n   Packages: {}\n".format(
-            host, value['cvss_score'], value['cvss_vector'], value['vuln_pkgs'])
+        issue_description += ("[+] {}\n   CVSS Score: {}\n   CVSS Vector: {}\n   Packages: {}\n"
+                              .format(host,
+                                      value['cvss_score'],
+                                      value['cvss_vector'],
+                                      value['vuln_pkgs']))
     issue_dict = {
         'project': {'key': issue_projectKey},
         'summary': issue_summary,
@@ -416,8 +452,11 @@ def opsgenie_alerter(result):
     configuration.api_key_prefix['Authorization'] = 'GenieKey'
     issue_description = "List of the vulnerable hosts: \n"
     for host, value in result.iteritems():
-        issue_description += "[+] {}\n   CVSS Score: {}\n   CVSS Vector: {}\n   Packages: {}\n".format(
-            host, value['cvss_score'], value['cvss_vector'], value['vuln_pkgs'])
+        issue_description += ("[+] {}\n   CVSS Score: {}\n   CVSS Vector: {}\n   Packages: {}\n"
+                              .format(host,
+                                      value['cvss_score'],
+                                      value['cvss_vector'],
+                                      value['vuln_pkgs']))
     body = CreateAlertRequest(
         message=opsgenie_message,
         description=issue_description,
@@ -432,7 +471,8 @@ def opsgenie_alerter(result):
         AlertApi().create_alert(body=body)
         print("+ OpsGenie alert created")
     except ApiException as err:
-        print("OpsGenie - Exception when calling AlertApi->create_alert: %s" % err)
+        print("OpsGenie - Exception when calling AlertApi->create_alert: %s"
+              % err)
 
 
 def parse_cmd_line_args():
@@ -441,7 +481,8 @@ def parse_cmd_line_args():
         '-t', '--target-hosts',
         type=str,
         default=target_hosts
-        # help='Bash glob (e.g."prod-db*") or python list of hosts (e.g."host1,host2")'
+        # help='Bash glob (e.g."prod-db*") or \
+        # python list of hosts (e.g."host1,host2")'
     )
     parser.add_argument(
         '-tF', '--target-form',
@@ -469,36 +510,61 @@ def parse_cmd_line_args():
 
 def main():
     args = parse_cmd_line_args()
-    # os_name = os_ver = ""
     if slack_alert:
         slack_tokenCheck()
+
+    # If default OS and Version is set
     if all([args.os_name, args.os_version]):
         print("+ Default OS: {}, Version: {}".format(
             args.os_name, args.os_version
         ))
         print("+ Getting the Installed Packages...")
-        pdict = get_packages(args.os_name, args.target_hosts, args.target_form)
+        pdict = get_packages(
+            args.os_name,
+            args.target_hosts,
+            args.target_form
+        )
         if pdict:
-            audit(pdict, args.os_name, args.os_version, args.target_hosts)
+            audit(
+                pdict,
+                args.os_name,
+                args.os_version,
+                args.target_hosts
+            )
         else:
             print("Error: package list is empty")
+    # No default OS and Verison is set; Detecting the OS automatically
     else:
         print("+ No default OS is configured. Detecting OS...")
-        os_dict = get_os(args.target_hosts, args.target_form)
+        os_dict = get_os(
+            args.target_hosts,
+            args.target_form
+        )
         if os_dict:
             print("+ Detected Operating Systems:")
             for os_nameVer, hlist in os_dict.iteritems():
                 os_info = os_nameVer.split('-')
-                print("   - OS Name: {}, OS Version: {}".format(os_info[0], os_info[1]))
+                print("   - OS Name: {}, OS Version: {}".format(
+                    os_info[0],
+                    os_info[1]))
                 print("+ Getting the Installed Packages...")
                 hosts = ','.join(hlist)
-                pdict = get_packages(os_info[0], hosts, "list")
+                pdict = get_packages(
+                    os_info[0],
+                    hosts,
+                    "list"
+                )
                 if pdict:
-                    audit(pdict, os_info[0], os_info[1], args.target_hosts)
+                    audit(
+                        pdict,
+                        os_info[0],
+                        os_info[1],
+                        args.target_hosts
+                    )
                 else:
                     print("Error: package list is empty")
 
 
 if __name__ == '__main__':
-    print('\n'.join(ASCII.splitlines()))
+    print(ASCII)
     main()
